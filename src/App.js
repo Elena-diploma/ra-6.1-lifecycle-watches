@@ -1,25 +1,51 @@
-import logo from './logo.svg';
 import './App.css';
+import React, {Component} from 'react';
+import {nanoid} from 'nanoid';
+import TimeAddForm from "./components/TimeAddForm/TimeAddForm";
+import ClockList from "./components/ClockList/ClockList";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends Component {
+  state = {
+    data: [
+      {name: 'Moscow', timezone: '3', id: nanoid()}
+    ]
+  }
+
+  addItem = (body) => {
+
+    const newItem = {
+      name: body.name,
+      timezone: body.timezone,
+      id: nanoid()
+    }
+
+    this.setState(({data})=> {
+      const newArr = [...data, newItem];
+      return {
+        data: newArr
+      }
+    })
+  }
+
+  deleteItem = (id) => {
+    this.setState(({data}) => {
+
+      const index = data.findIndex(elem => elem.id === id);
+      const newArr = [...data.slice(0, index), ...data.slice(index + 1)];
+
+      return {
+        data: newArr
+      }
+    })
+  }
+
+  render() {
+    return (
+        <div className="App">
+          <TimeAddForm onAdd={this.addItem}/>
+          <ClockList clocks={this.state.data} onDelete={this.deleteItem}/>
+        </div>
+    )
+  }
+
 }
-
-export default App;
